@@ -1,0 +1,21 @@
+<div class="MKTHeader">
+  <div class="MKTHeader__declare">
+    <h3>廣告企劃</h3>
+    <p>→以下是{{ company }}提供的內容</p>
+  </div>
+  <div class="MKTHeader__container" :class="{active:active}">
+    <a class="MKTHeader__menuButton" @click="openMenu">
+      <span></span>
+    </a>
+    <nav>
+      <ul class="MKTHeader__menu">
+        <li v-for="(item, index) in menu" :key="index" @click="openMenu">
+          <router-link :to="item.href" class="MKTHeader__menuLink">
+            <span class="MKTHeader__menuTitle" :style="{lineHeight:50/(1+!!(item.text))+'px'}">{{ item.title }}</span>
+            </span>
+          </router-link>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>

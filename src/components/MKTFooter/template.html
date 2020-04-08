@@ -1,0 +1,8 @@
+<div class="MKTFooter">
+    上述內容由 {{ company }} 提供，104整合招募服務處代為維護管理
+    <br />以上所提及之各公司與產品均分屬各相關公司與個別擁有者之商標
+    <br />
+    <span v-if="!!(phone) && !!(email)">意見反應：{{phone}} <a :href="'mailto:'+email" v-if="!!(email)"><img
+                src="./mail.gif"></a><br /></span>
+    本網站內容享有著作權，禁止侵害，違者必究。© 2001-{{year}} 104 Corporation All Rights Reserved
+</div>

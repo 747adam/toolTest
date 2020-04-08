@@ -1,83 +1,167 @@
 <template>
   <div class="index">
-    <!-- <a
-      class="el_select"
-      @click="openSelect('Major')"
-    >
-      {{ majorData && majorData.des || '你就讀的科系' }}
-    </a>
-    <a
-      class="el_select"
-      @click="openSelect('Abil', 3)"
-    >
-      你擅長的活動（最多三組）
-    </a> -->
-    <a
-      class="el_select"
-      @click="openSelect('JobCat')"
-    >
-      {{ testData && testData.des || '你的夢想職業（選填)' }}
-    </a>
+    <section>
+      <div class="title">
+        <h2>類目選單</h2>
+      </div>
+      <div class="content">
+        <div
+          class="el_select"
+          :class="dataMajor && dataMajor[0] ? '' : 'placeholder'"
+          @click="openSelect('Major', 1, dataMajor)"
+        >
+          {{ dataMajor && dataMajor[0] && dataMajor[0].des || '你就讀的科系' }}
+        </div>
+        <div
+          class="el_select"
+          :class="dataTool && dataTool[0] ? '' : 'placeholder'"
+          @click="openSelect('Tool', 1, dataTool)"
+        >
+          {{ dataTool && dataTool[0] && dataTool[0].des || '工具' }}
+        </div>
+        <div
+          class="el_select"
+          :class="dataAbil && dataAbil[0] ? '' : 'placeholder'"
+          @click="openSelect('Abil', 3, dataAbil)"
+        >
+          {{ dataAbil && dataAbil[0] && dataAbil[0].des ? '' : '技能類別（最多三組）' }}
+          <span
+            v-for="(item, index) in dataAbil"
+            v-show="dataAbil && dataAbil[0]"
+            :key="index"
+          >
+            {{ item.des }}
+            <a @click.stop="delItem(dataAbil, item.no)">X</a>
+          </span>
+        </div>
+        <div
+          class="el_select area"
+          :class="dataArea && dataArea[0] ? '' : 'placeholder'"
+          @click="openSelect('Area', 1, dataArea)"
+        >
+          {{ dataArea && dataArea[0] && dataArea[0].des || '選擇地區' }}
+        </div>
+      </div>
+    </section>
+    <section>
+      <div class="title">
+        <h2>自訂類目選單</h2>
+        <p>json檔存於個人githoub</p>
+      </div>
+      <div class="content">
+        <div
+          class="el_select"
+          :class="dataTest && dataTest[0] ? '' : 'placeholder'"
+          @click="openSelect('https://747adam.github.io/menuTest/dist/json/testJson.json', 1, dataTest)"
+        >
+          {{ dataTest && dataTest[0] && dataTest[0].des || '你的夢想職業（選填)' }}
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 <script>
-import testJson from '~/store/api/testJson.json'
 import { ref } from '@vue/composition-api'
 export default {
   name: 'Index',
-  setup (context) {
-    let majorData = ref(null)
-    let abilData = ref(null)
-    let JobCatData = ref(null)
-    let testData = ref(null)
-    const handleCallback = e => {
-      console.log(e)
+  setup () {
+    let dataMajor = ref(null)
+    let dataAbil = ref(null)
+    let dataTool = ref(null)
+    let dataArea = ref(null)
+    let dataTest = ref(null)
+    const handleCallback = (e) => {
       if (e.payload.dataSource === 'Major') {
-        majorData.value = e.selectedItems[0]
+        dataMajor.value = e.selectedItems || null
       } else if (e.payload.dataSource === 'Abil') {
-        abilData.value = e.selectedItems
-      } else if (e.payload.dataSource === 'JobCat') {
-        JobCatData.value = e.selectedItems[0]
+        dataAbil.value = e.selectedItems || null
+      } else if (e.payload.dataSource === 'Tool') {
+        dataTool.value = e.selectedItems || null
+      } else if (e.payload.dataSource === 'Area') {
+        dataArea.value = e.selectedItems || null
       } else {
-        testData.value = e.selectedItems[0]
+        dataTest.value = e.selectedItems || null
       }
     }
-    const openSelect = (type, max) => {
-      console.log(testJson)
+    const openSelect = (type, max, selected) => {
+      console.log('上次…', selected)
+      if (type === 'Area') {
+        const element = document.getElementById('body')
+        element.classList.add('area')
+        // const elementBox = document.getElementByClass('category-picker__second-floor')
+        // elementBox.classList.add('category-picker__second-floor--focus')
+      } else {
+        const element = document.getElementById('body')
+        element.classList.remove('area')
+      }
       window.categoryPicker.open({
         onSubmit: handleCallback,
-        // 資料類型或來源
-        dataSource: 'https://747adam.github.io/menuTest/dist/json/testJson.json',
-        // 類目選單主題樣式
+        dataSource: type,
+        // 已選
+        selectedItems: selected || null,
         theme: 'customer-theme',
-        // 最大可選數量
         maxSelectedNumber: max || 1,
-        // 點選 lightbox 外部範圍可快速關閉
         backdropClose: true,
-        // 推薦區塊是否顯示
-        recommendation: false
+        recommendation: false,
+        whitelist: type === 'Area' ? '600[1]{1}' : '',
+        unselectableList: '6001000000'
       })
     }
+    const delItem = (dataName, no) => {
+      const delIndex = dataName.findIndex(dataName => dataName.no === no)
+      dataName.splice(delIndex, 1)
+    }
     return {
-      majorData,
-      abilData,
-      JobCatData,
-      testData,
-      openSelect
+      dataMajor,
+      dataAbil,
+      dataArea,
+      dataTool,
+      dataTest,
+      openSelect,
+      // openArea,
+      delItem
     }
   }
 }
 </script>
 
-<style>
+<style lang="scss">
 .index {
-  padding: 50px 0;
+  display: flex;
+  margin: 0 auto;
+  padding: 20px 0;
+  width: 100%;
+  max-width: 980px;
+  flex-direction: column;
+}
+
+section {
+  margin-bottom: 20px;
+}
+
+h2 , p {
+  text-align: center;
+}
+
+h2 {
+  font-size: 24px;
+  line-height: 30px;
+}
+
+p {
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.title {
+  margin-bottom: 20px;
 }
 
 .el_select {
+  position: relative;
   display: block;
   margin: 0 auto 20px;
-  padding: 10px 30px 10px 10px;
+  padding: 10px 26px 10px 10px;
   width: 300px;
   font-size: 16px;
   color: #292929;
@@ -86,4 +170,37 @@ export default {
   border-radius: 4px;
   line-height: 22px;
   cursor: pointer;
-}</style>
+  &:before {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    display: block;
+    width: 8px;
+    height: 8px;
+    content: '';
+    border-right: 1px solid #a9a9a9;
+    border-bottom: 1px solid #a9a9a9;
+    transform: rotate(45deg) translate(-50%, -50%);
+  }
+  &.placeholder {
+    color: #a9a9a9;
+  }
+  span {
+    display: inline-block;
+    margin: 2px;
+    padding: 4px 12px;
+    color: #ffffff;
+    background: #39c8d0;
+    border-radius: 15px;
+  }
+}
+
+body.area {
+  .category-picker .category-picker__level-one {
+    display: none;
+  }
+  .category-picker__second-floor {
+    width: 100%;
+  }
+}
+</style>
