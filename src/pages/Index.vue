@@ -61,16 +61,21 @@
   </div>
 </template>
 <script>
-import { ref } from '@vue/composition-api'
+import { ref, onMounted, onBeforeUnmount } from '@vue/composition-api'
 export default {
   name: 'Index',
   setup () {
+    let ww = ref(0)
     let dataMajor = ref(null)
     let dataAbil = ref(null)
     let dataTool = ref(null)
     let dataArea = ref(null)
     let dataTest = ref(null)
     const handleCallback = (e) => {
+      switch (e.type) {
+        case 'close':
+          break
+      }
       if (e.payload.dataSource === 'Major') {
         dataMajor.value = e.selectedItems || null
       } else if (e.payload.dataSource === 'Abil') {
@@ -84,12 +89,9 @@ export default {
       }
     }
     const openSelect = (type, max, selected) => {
-      console.log('上次…', selected)
       if (type === 'Area') {
         const element = document.getElementById('body')
         element.classList.add('area')
-        // const elementBox = document.getElementByClass('category-picker__second-floor')
-        // elementBox.classList.add('category-picker__second-floor--focus')
       } else {
         const element = document.getElementById('body')
         element.classList.remove('area')
@@ -104,14 +106,25 @@ export default {
         backdropClose: true,
         recommendation: false,
         whitelist: type === 'Area' ? '600[1]{1}' : '',
-        unselectableList: '6001000000'
+        unselectableList: selected === dataTest ? '[0-9]{7}000' : ''
       })
     }
     const delItem = (dataName, no) => {
       const delIndex = dataName.findIndex(dataName => dataName.no === no)
       dataName.splice(delIndex, 1)
     }
+    const resizeWidth = () => {
+      ww.value = document.body.offsetWidth
+      window.categoryPicker.close()
+    }
+    onMounted(() => {
+      window.addEventListener('resize', resizeWidth)
+    })
+    onBeforeUnmount(() => {
+      window.removeEventListener('resize', resizeWidth)
+    })
     return {
+      ww,
       dataMajor,
       dataAbil,
       dataArea,
@@ -201,6 +214,13 @@ body.area {
   }
   .category-picker__second-floor {
     width: 100%;
+  }
+}
+@media (max-width: 768px) {
+  body.area {
+    .category-picker .category-picker__level-one {
+      display: block;
+    }
   }
 }
 </style>
