@@ -22,7 +22,7 @@
         <div
           class="el_select"
           :class="dataAbil && dataAbil[0] ? '' : 'placeholder'"
-          @click="openSelect('Abil', 3, dataAbil)"
+          @click.self="openSelect('Abil', 3, dataAbil)"
         >
           {{ dataAbil && dataAbil[0] && dataAbil[0].des ? '' : '技能類別（最多三組）' }}
           <span
@@ -31,7 +31,7 @@
             :key="index"
           >
             {{ item.des }}
-            <a @click.stop="delItem(dataAbil, item.no)">X</a>
+            <a @click.stop="delItem(dataAbil, item.no)" />
           </span>
         </div>
         <div
@@ -176,12 +176,12 @@ p {
   margin: 0 auto 20px;
   padding: 10px 26px 10px 10px;
   width: 300px;
-  font-size: 16px;
+  font-size: 14px;
   color: #292929;
   background-color: #f3f3f3;
   border: solid 1px #eeeeee;
   border-radius: 4px;
-  line-height: 22px;
+  line-height: 16px;
   cursor: pointer;
   &:before {
     position: absolute;
@@ -199,12 +199,51 @@ p {
     color: #a9a9a9;
   }
   span {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     margin: 2px;
-    padding: 4px 12px;
+    padding: 4px 10px;
     color: #ffffff;
     background: #39c8d0;
     border-radius: 15px;
+    cursor: default;
+    a , a:after {
+      display: flex;
+      width: 12px;
+      height: 12px;
+      cursor: pointer;
+      flex-direction: column;
+    }
+    a {
+      position: relative;
+      display: inline-block;
+      margin-left: 4px;
+      width: 16px;
+      height: 16px;
+      &:before , &:after {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        margin-top: -1px;
+        width: 100%;
+        height: 2px;
+        background-color: #ffffff;
+        border-radius: 1px;
+        content: '';
+        transition: background-color .3s;
+      }
+      &:before {
+        transform: rotate(45deg);
+      }
+      &:after {
+        transform: rotate(-45deg);
+      }
+      &:hover {
+        &:before , &:after {
+          background-color: #c5e2e4;
+        }
+      }
+    }
   }
 }
 
