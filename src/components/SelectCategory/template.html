@@ -1,0 +1,7 @@
+<div class="SelectCategory" @click="openSelect">
+  {{ selected && selected[0] && selected[0].des || defaultText }}
+  <span v-for="(item, index) in selected" v-show="selected && selected[0] && props.max > 1" :key="index">
+    {{ item.des }}
+    <a @click.stop="delItem(selected, item.no)" />
+  </span>
+</div>

@@ -22,7 +22,7 @@
         <div
           class="el_select"
           :class="dataAbil && dataAbil[0] ? '' : 'placeholder'"
-          @click.self="openSelect('Abil', 3, dataAbil)"
+          @click="openSelect('Abil', 3, dataAbil)"
         >
           {{ dataAbil && dataAbil[0] && dataAbil[0].des ? '' : '技能類別（最多三組）' }}
           <span
@@ -37,7 +37,7 @@
         <div
           class="el_select area"
           :class="dataArea && dataArea[0] ? '' : 'placeholder'"
-          @click="openSelect('Area', 1, dataArea)"
+          @click="openSelect('Area', 1, dataArea, '[0-9]{7}000')"
         >
           {{ dataArea && dataArea[0] && dataArea[0].des || '選擇地區' }}
         </div>
@@ -52,7 +52,7 @@
         <div
           class="el_select"
           :class="dataTest && dataTest[0] ? '' : 'placeholder'"
-          @click="openSelect('https://747adam.github.io/menuTest/dist/json/testJson.json', 1, dataTest)"
+          @click="openSelect( 'https://747adam.github.io/menuTest/dist/json/testJson.json', 1, dataTest, '[0-9]{7}000')"
         >
           {{ dataTest && dataTest[0] && dataTest[0].des || '你的夢想職業（選填)' }}
         </div>
@@ -71,42 +71,34 @@ export default {
     let dataTool = ref(null)
     let dataArea = ref(null)
     let dataTest = ref(null)
+    const mapObj = ref({
+      'Major': dataMajor,
+      'Abil': dataAbil,
+      'Tool': dataTool,
+      'Area': dataArea,
+      'https://747adam.github.io/menuTest/dist/json/testJson.json': dataTest
+    })
     const handleCallback = (e) => {
-      switch (e.type) {
-        case 'close':
-          break
-      }
-      if (e.payload.dataSource === 'Major') {
-        dataMajor.value = e.selectedItems || null
-      } else if (e.payload.dataSource === 'Abil') {
-        dataAbil.value = e.selectedItems || null
-      } else if (e.payload.dataSource === 'Tool') {
-        dataTool.value = e.selectedItems || null
-      } else if (e.payload.dataSource === 'Area') {
-        dataArea.value = e.selectedItems || null
-      } else {
-        dataTest.value = e.selectedItems || null
-      }
+      const objName = e.payload.dataSource
+      mapObj.value[objName] = e.selectedItems || null
     }
-    const openSelect = (type, max, selected) => {
+    const openSelect = (type, max, selected, unselectableList) => {
+      const elBody = document.getElementById('body')
       if (type === 'Area') {
-        const element = document.getElementById('body')
-        element.classList.add('area')
+        elBody.classList.add('area')
       } else {
-        const element = document.getElementById('body')
-        element.classList.remove('area')
+        elBody.classList.remove('area')
       }
       window.categoryPicker.open({
         onSubmit: handleCallback,
         dataSource: type,
-        // 已選
         selectedItems: selected || null,
         theme: 'customer-theme',
         maxSelectedNumber: max || 1,
         backdropClose: true,
         recommendation: false,
         whitelist: type === 'Area' ? '600[1]{1}' : '',
-        unselectableList: selected === dataTest ? '[0-9]{7}000' : ''
+        unselectableList: unselectableList || ''
       })
     }
     const delItem = (dataName, no) => {
@@ -130,8 +122,8 @@ export default {
       dataArea,
       dataTool,
       dataTest,
+      mapObj,
       openSelect,
-      // openArea,
       delItem
     }
   }
@@ -206,7 +198,6 @@ p {
     color: #ffffff;
     background: #39c8d0;
     border-radius: 15px;
-    cursor: default;
     a , a:after {
       display: flex;
       width: 12px;
