@@ -1,76 +1,128 @@
 <template>
   <div class="index">
-    <section>
-      <div class="title">
-        <h2>類目選單</h2>
-      </div>
-      <div class="content">
-        <div
-          class="el_select"
-          :class="dataMajor && dataMajor[0] ? '' : 'placeholder'"
-          @click="openSelect('Major', 1, dataMajor)"
-        >
-          {{ dataMajor && dataMajor[0] && dataMajor[0].des || '你就讀的科系' }}
-        </div>
-        <div
-          class="el_select"
-          :class="dataTool && dataTool[0] ? '' : 'placeholder'"
-          @click="openSelect('Tool', 1, dataTool)"
-        >
-          {{ dataTool && dataTool[0] && dataTool[0].des || '工具' }}
-        </div>
-        <div
-          class="el_select"
-          :class="dataAbil && dataAbil[0] ? '' : 'placeholder'"
-          @click="openSelect('Abil', 3, dataAbil)"
-        >
-          {{ dataAbil && dataAbil[0] && dataAbil[0].des ? '' : '技能類別（最多三組）' }}
-          <span
-            v-for="(item, index) in dataAbil"
-            v-show="dataAbil && dataAbil[0]"
-            :key="index"
+    <ValidationObserver v-slot="{ handleSubmit }">
+      <form @submit.prevent="handleSubmit(onSubmit)">
+        <section>
+          <div class="title">
+            <h2>類目選單</h2>
+          </div>
+          <div class="content">
+            <div
+              class="wrap_select multiple"
+              @click="openSelect('Major', 3, dataMajor)"
+            >
+              <ValidationProvider
+                v-slot="{ errors }"
+                rules="required"
+                name="工具"
+              >
+                <input
+                  v-show="dataMajor && !dataMajor.length"
+                  class="el_select"
+                  :value="dataMajor && dataMajor[0] && dataMajor[0].des"
+                  type="text"
+                  placeholder="請選擇工具"
+                >
+                <div
+                  v-show="dataMajor && dataMajor.length"
+                  class="list"
+                >
+                  <span
+                    v-for="(item, index) in dataMajor"
+                    :key="index"
+                  >
+                    {{ item.des }}
+                    <a @click.stop="delItem(dataMajor, item.no)" />
+                  </span>
+                </div>
+                <div class="error">
+                  {{ errors[0] }}
+                </div>
+              </ValidationProvider>
+            </div>
+            <div
+              class="wrap_select"
+              @click="openSelect('Area', 1, dataArea, '[0-9]{7}000')"
+            >
+              <ValidationProvider
+                v-slot="{ errors }"
+                rules="required"
+                name="地區"
+              >
+                <input
+                  class="el_select"
+                  :value="dataArea && dataArea[0] && dataArea[0].des"
+                  type="text"
+                  placeholder="請選擇地區"
+                >
+                <div class="error">
+                  {{ errors[0] }}
+                </div>
+              </ValidationProvider>
+            </div>
+          </div>
+        </section>
+        <section>
+          <div class="title">
+            <h2>自訂類目選單</h2>
+            <p>json檔存於個人githoub</p>
+          </div>
+          <div class="content">
+            <div
+              class="wrap_select"
+              @click="openSelect( 'https://747adam.github.io/menuTest/dist/json/testJson.json', 1, dataTest, '[0-9]{7}000')"
+            >
+              <ValidationProvider
+                v-slot="{ errors }"
+                rules="required"
+                name="夢想職業"
+              >
+                <input
+                  class="el_select"
+                  :value="dataTest && dataTest[0] && dataTest[0].des"
+                  type="text"
+                  placeholder="你的夢想職業（選填)"
+                >
+                <div class="error">
+                  {{ errors[0] }}
+                </div>
+              </ValidationProvider>
+            </div>
+          </div>
+        </section>
+        <div class="wrap_btn">
+          <button
+            class="btn_set"
+            type="submit"
           >
-            {{ item.des }}
-            <a @click.stop="delItem(dataAbil, item.no)" />
-          </span>
+            送出
+          </button>
         </div>
-        <div
-          class="el_select area"
-          :class="dataArea && dataArea[0] ? '' : 'placeholder'"
-          @click="openSelect('Area', 1, dataArea, '[0-9]{7}000')"
-        >
-          {{ dataArea && dataArea[0] && dataArea[0].des || '選擇地區' }}
-        </div>
-      </div>
-    </section>
-    <section>
-      <div class="title">
-        <h2>自訂類目選單</h2>
-        <p>json檔存於個人githoub</p>
-      </div>
-      <div class="content">
-        <div
-          class="el_select"
-          :class="dataTest && dataTest[0] ? '' : 'placeholder'"
-          @click="openSelect( 'https://747adam.github.io/menuTest/dist/json/testJson.json', 1, dataTest, '[0-9]{7}000')"
-        >
-          {{ dataTest && dataTest[0] && dataTest[0].des || '你的夢想職業（選填)' }}
-        </div>
-      </div>
-    </section>
+      </form>
+    </ValidationObserver>
   </div>
 </template>
 <script>
 import { ref, onMounted, onBeforeUnmount } from '@vue/composition-api'
+import { ValidationObserver, ValidationProvider, extend } from 'vee-validate'
+import { required } from 'vee-validate/dist/rules'
+extend('required', {
+  ...required,
+  message: '{_field_}為必選欄位'
+})
 export default {
   name: 'Index',
+  components: {
+    ValidationObserver,
+    ValidationProvider
+  },
   setup () {
     let ww = ref(0)
-    let dataMajor = ref(null)
-    let dataAbil = ref(null)
-    let dataTool = ref(null)
-    let dataArea = ref(null)
-    let dataTest = ref(null)
+    let dataMajor = ref([])
+    let dataAbil = ref([])
+    let dataTool = ref([])
+    let dataArea = ref([])
+    let dataTest = ref([])
     const mapObj = ref({
       'Major': dataMajor,
       'Abil': dataAbil,
@@ -109,6 +161,9 @@ export default {
       ww.value = document.body.offsetWidth
       window.categoryPicker.close()
     }
+    const onSubmit = () => {
+      alert('表單驗證成功')
+    }
     onMounted(() => {
       window.addEventListener('resize', resizeWidth)
     })
@@ -124,13 +179,23 @@ export default {
       dataTest,
       mapObj,
       openSelect,
-      delItem
+      delItem,
+      onSubmit
     }
   }
 }
 </script>
 
 <style lang="scss">
+::placeholder {
+  color: #a4a4a4;
+  opacity: 1; /* Firefox */
+}
+
+::-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #a4a4a4;
+}
+
 .index {
   display: flex;
   margin: 0 auto;
@@ -162,19 +227,16 @@ p {
   margin-bottom: 20px;
 }
 
-.el_select {
+.wrap_select {
   position: relative;
-  display: block;
-  margin: 0 auto 20px;
-  padding: 10px 26px 10px 10px;
+  margin: 0 auto 30px;
   width: 300px;
   font-size: 14px;
+  line-height: 18px;
   color: #292929;
   background-color: #f3f3f3;
   border: solid 1px #eeeeee;
   border-radius: 4px;
-  line-height: 16px;
-  cursor: pointer;
   &:before {
     position: absolute;
     top: 50%;
@@ -186,18 +248,34 @@ p {
     border-right: 1px solid #a9a9a9;
     border-bottom: 1px solid #a9a9a9;
     transform: rotate(45deg) translate(-50%, -50%);
+    pointer-events: none;
   }
-  &.placeholder {
-    color: #a9a9a9;
+  .error {
+    position: absolute;
+    top: 45px;
+    left: 10px;
+    font-size: 12px;
+    color: #ce0000;
+    line-height: 14px;
   }
-  span {
+  .list {
+    display: none;
+  }
+  &.multiple .list {
     display: inline-flex;
     align-items: center;
-    margin: 2px;
-    padding: 4px 10px;
-    color: #ffffff;
-    background: #39c8d0;
-    border-radius: 15px;
+    flex-wrap: wrap;
+    padding: 5px;
+    pointer-events: none;
+    span {
+      display: inline-flex;
+      margin: 2px;
+      padding: 4px 10px;
+      color: #ffffff;
+      background: #39c8d0;
+      border-radius: 15px;
+      pointer-events: auto;
+    }
     a , a:after {
       display: flex;
       width: 12px;
@@ -220,8 +298,8 @@ p {
         height: 2px;
         background-color: #ffffff;
         border-radius: 1px;
-        content: '';
         transition: background-color .3s;
+        content: '';
       }
       &:before {
         transform: rotate(45deg);
@@ -236,6 +314,33 @@ p {
       }
     }
   }
+}
+
+.el_select {
+  padding: 12px 26px 12px 10px;
+  width: 100%;
+  background-color: transparent;
+  border: 0;
+  outline: none;
+  cursor: pointer;
+  caret-color: transparent;
+}
+
+.wrap_btn {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn_set {
+  padding: 10px 20px;
+  font-size: 18px;
+  text-align: center;
+  color: #ffffff;
+  background: #ff9100;
+  border-radius: 4px;
+  line-clamp: 24px;
+  cursor: pointer;
 }
 
 body.area {
