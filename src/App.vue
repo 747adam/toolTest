@@ -27,20 +27,12 @@ export default {
       email: 'adam.lai@104.com.tw',
       menu: [
         {
-          href: '',
-          title: '主選單01'
+          href: '/index.html',
+          title: 'vee-validate'
         },
         {
-          href: '',
-          title: '主選單02'
-        },
-        {
-          href: '',
-          title: '主選單03'
-        },
-        {
-          href: '',
-          title: '主選單04'
+          href: '/formTest.html',
+          title: 'FormHelper'
         }
       ]
     }

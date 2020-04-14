@@ -11,9 +11,14 @@ const routes = [
     name: 'index',
     component: Index
   },
+  // {
+  //   path: '/form.html',
+  //   name: 'form',
+  //   component: FormTest
+  // },
   {
-    path: '/form.html',
-    name: 'form',
+    path: '/formTest.html',
+    name: 'FormTest',
     component: FormTest
   },
   {

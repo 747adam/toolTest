@@ -1,14 +1,16 @@
 <template>
   <div class="index">
     <ValidationObserver v-slot="{ handleSubmit }">
+      <!-- vee-validate form必需包在ValidationObserver內 -->
       <form @submit.prevent="handleSubmit(onSubmit)">
         <section>
           <div class="title">
-            <h2>類目選單</h2>
+            <h2>類目選單1</h2>
+            <p>vee-validate</p>
           </div>
           <div class="content">
             <div
-              class="wrap_select multiple"
+              class="wrap_category_multiple"
               @click="openSelect('Major', 3, dataMajor)"
             >
               <ValidationProvider
@@ -19,6 +21,7 @@
                 <input
                   v-show="dataMajor && !dataMajor.length"
                   class="el_select"
+                  :class="{ 'border_red': errors[0] }"
                   :value="dataMajor && dataMajor[0] && dataMajor[0].des"
                   type="text"
                   placeholder="請選擇工具"
@@ -41,7 +44,7 @@
               </ValidationProvider>
             </div>
             <div
-              class="wrap_select"
+              class="wrap_category"
               @click="openSelect('Area', 1, dataArea, '[0-9]{7}000')"
             >
               <ValidationProvider
@@ -51,6 +54,7 @@
               >
                 <input
                   class="el_select"
+                  :class="{ 'border_red': errors[0] }"
                   :value="dataArea && dataArea[0] && dataArea[0].des"
                   type="text"
                   placeholder="請選擇地區"
@@ -69,7 +73,7 @@
           </div>
           <div class="content">
             <div
-              class="wrap_select"
+              class="wrap_category"
               @click="openSelect( 'https://747adam.github.io/menuTest/dist/json/testJson.json', 1, dataTest, '[0-9]{7}000')"
             >
               <ValidationProvider
@@ -79,6 +83,7 @@
               >
                 <input
                   class="el_select"
+                  :class="{ 'border_red': errors[0] }"
                   :value="dataTest && dataTest[0] && dataTest[0].des"
                   type="text"
                   placeholder="你的夢想職業（選填)"
@@ -91,6 +96,7 @@
           </div>
         </section>
         <div class="wrap_btn">
+          <!-- vee-validate 只能用button做全表單驗證 -->
           <button
             class="btn_set"
             type="submit"
@@ -104,11 +110,20 @@
 </template>
 <script>
 import { ref, onMounted, onBeforeUnmount } from '@vue/composition-api'
-import { ValidationObserver, ValidationProvider, extend } from 'vee-validate'
+import { ValidationObserver, ValidationProvider, extend, localize } from 'vee-validate'
+// import zh_TW from 'vee-validate/dist/locale/zh_TW.json'
 import { required } from 'vee-validate/dist/rules'
 extend('required', {
   ...required,
   message: '{_field_}為必選欄位'
+})
+localize({
+  zh_TW: {
+    names: {
+      email: '請輸入email',
+      password: '請輸入密碼'
+    }
+  }
 })
 export default {
   name: 'Index',
@@ -205,6 +220,12 @@ export default {
   flex-direction: column;
 }
 
+form {
+  margin: 0px auto;
+  width: 100%;
+  max-width: 300px;
+}
+
 section {
   margin-bottom: 20px;
 }
@@ -215,57 +236,42 @@ h2 , p {
 
 h2 {
   font-size: 24px;
-  line-height: 30px;
+  line-height: 32px;
 }
 
 p {
-  font-size: 16px;
+  font-size: 14px;
   line-height: 20px;
+  color: #7e7e7e;
 }
 
 .title {
   margin-bottom: 20px;
 }
-
-.wrap_select {
-  position: relative;
-  margin: 0 auto 30px;
-  width: 300px;
-  font-size: 14px;
-  line-height: 18px;
-  color: #292929;
-  background-color: #f3f3f3;
-  border: solid 1px #eeeeee;
-  border-radius: 4px;
-  &:before {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    display: block;
-    width: 8px;
-    height: 8px;
-    content: '';
-    border-right: 1px solid #a9a9a9;
-    border-bottom: 1px solid #a9a9a9;
-    transform: rotate(45deg) translate(-50%, -50%);
-    pointer-events: none;
-  }
-  .error {
-    position: absolute;
-    top: 45px;
-    left: 10px;
-    font-size: 12px;
-    color: #ce0000;
-    line-height: 14px;
+// 類目選單 復選樣式
+.wrap_category_multiple {
+  input {
+    padding: 12px 26px 12px 10px;
+    width: 100%;
+    background-color: transparent;
+    border: 0;
+    border-radius: 4px;
+    outline: none;
+    caret-color: transparent;
+    &.border_red {
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      width: calc(100% + 2px);
+      height: 44px;
+      border: 1px solid #ea475b;
+    }
   }
   .list {
-    display: none;
-  }
-  &.multiple .list {
     display: inline-flex;
     align-items: center;
     flex-wrap: wrap;
-    padding: 5px;
+    padding: 5px 25px 5px 5px;
     pointer-events: none;
     span {
       display: inline-flex;
@@ -315,15 +321,55 @@ p {
     }
   }
 }
-
-.el_select {
-  padding: 12px 26px 12px 10px;
+// 類目選單 單、復選共用樣式
+.wrap_category , .wrap_category_multiple {
+  position: relative;
+  margin-bottom: 30px;
+  &:before {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    display: block;
+    width: 8px;
+    height: 8px;
+    content: '';
+    border-right: 1px solid #a9a9a9;
+    border-bottom: 1px solid #a9a9a9;
+    transform: rotate(45deg) translate(-50%, -50%);
+    pointer-events: none;
+  }
+  input {
+    padding: 12px 26px 12px 10px;
+    cursor: pointer;
+  }
+  .error {
+    position: absolute;
+    top: 45px;
+    left: 10px;
+    font-size: 12px;
+    color: #ea475b;
+    line-height: 14px;
+  }
+}
+// 類目選單 單選error位置微調
+.wrap_category {
+  span .error {
+    top: 46px;
+  }
+}
+// 類目選單select共用樣式
+.wrap_category_multiple , .wrap_category .el_select {
   width: 100%;
-  background-color: transparent;
-  border: 0;
-  outline: none;
-  cursor: pointer;
-  caret-color: transparent;
+  min-height: 44px;
+  font-size: 14px;
+  line-height: 18px;
+  color: #292929;
+  background-color: #f3f3f3;
+  border: solid 1px #eeeeee;
+  border-radius: 4px;
+  &.border_red {
+    border: 1px solid #ea475b;
+  }
 }
 
 .wrap_btn {
@@ -334,12 +380,13 @@ p {
 
 .btn_set {
   padding: 10px 20px;
+  width: 100%;
   font-size: 18px;
   text-align: center;
   color: #ffffff;
   background: #ff9100;
   border-radius: 4px;
-  line-clamp: 24px;
+  line-height: 24px;
   cursor: pointer;
 }
 
