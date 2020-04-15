@@ -1,52 +1,35 @@
 <script>
-import { ref, onMounted, onBeforeUnmount } from '@vue/composition-api'
-import { ValidationProvider, extend } from 'vee-validate'
-import { required } from 'vee-validate/dist/rules'
-extend('required', {
-  ...required,
-  message: '{_field_}為必選欄位'
-})
+import { ref, computed, onMounted, onBeforeUnmount } from '@vue/composition-api'
 export default {
   name: 'SelectCategory',
-  components: {
-    ValidationProvider
-  },
   props: {
     type: {
       type: String,
       required: true
     },
-    name: {
-      type: String,
-      default: ''
-    },
-    rules: {
-      type: String,
-      default: ''
-    },
     max: {
       type: Number,
       default: 1
     },
-    // 只顯示類目代碼
     whitelist: {
       type: String,
       default: ''
     },
-    // 隱藏類目代碼
     blacklist: {
       type: String,
       default: ''
     },
-    // 隱藏類目代碼 CheckBox
     unselectableList: {
       type: String,
       default: ''
     },
-    // 隱藏大類
     closeLevelOne: {
       type: Boolean,
       default: false
+    },
+    defaultText: {
+      type: String,
+      default: '請選擇'
     }
   },
   setup (props, context) {
@@ -56,20 +39,20 @@ export default {
       selected.value = e.selectedItems || null
       emitData()
     }
-    const closeLOne = () => {
-      const domBody = document.getElementById('body')
+    const closeLOne = computed(() => {
+      const elBody = document.getElementById('body')
       if (props.closeLevelOne) {
-        domBody.classList.add('close_select_LOne')
+        elBody.classList.add('close_select_LOne')
       } else {
-        domBody.classList.remove('close_select_LOne')
+        elBody.classList.remove('close_select_LOne')
       }
-    }
-    const openSelect = () => {
+    })
+    const openSelect = (type, max, selected, unselectableList) => {
       closeLOne()
       window.categoryPicker.open({
         onSubmit: handleCallback,
         dataSource: props.type,
-        selectedItems: selected.value || null,
+        selectedItems: selected || null,
         theme: 'customer-theme',
         maxSelectedNumber: props.max,
         backdropClose: true,

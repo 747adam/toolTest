@@ -1,16 +1,7 @@
-.SelectCategory {
+// 類目選單 單、復選共用樣式
+.select_category {
   position: relative;
-  display: block;
-  margin: 0 auto 20px;
-  padding: 10px 26px 10px 10px;
-  width: 300px;
-  font-size: 14px;
-  color: #292929;
-  background-color: #f3f3f3;
-  border: solid 1px #eeeeee;
-  border-radius: 4px;
-  line-height: 16px;
-  cursor: pointer;
+  margin-bottom: 30px;
   &:before {
     position: absolute;
     top: 50%;
@@ -22,18 +13,56 @@
     border-right: 1px solid #a9a9a9;
     border-bottom: 1px solid #a9a9a9;
     transform: rotate(45deg) translate(-50%, -50%);
+    pointer-events: none;
   }
-  &.placeholder {
-    color: #a9a9a9;
+  input {
+    padding: 12px 26px 12px 10px;
+    cursor: pointer;
   }
-  span {
+  .error {
+    position: absolute;
+    top: 46px;
+    left: 10px;
+    font-size: 12px;
+    color: #ea475b;
+    line-height: 14px;
+  }
+}
+
+// 類目選單 復選樣式
+.select_category.multiple {
+  input {
+    padding: 12px 26px 12px 10px;
+    width: 100%;
+    background-color: transparent;
+    border: 0;
+    border-radius: 4px;
+    outline: none;
+    caret-color: transparent;
+    &.border_red {
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      width: calc(100% + 2px);
+      height: 44px;
+      border: 1px solid #ea475b;
+    }
+  }
+  .list {
     display: inline-flex;
     align-items: center;
-    margin: 2px;
-    padding: 4px 10px;
-    color: #ffffff;
-    background: #39c8d0;
-    border-radius: 15px;
+    flex-wrap: wrap;
+    padding: 5px 25px 5px 5px;
+    pointer-events: none;
+    span {
+      display: inline-flex;
+      margin: 2px;
+      padding: 4px 10px;
+      color: #ffffff;
+      background: #39c8d0;
+      border-radius: 15px;
+      pointer-events: auto;
+    }
     a,
     a:after {
       display: flex;
@@ -58,8 +87,8 @@
         height: 2px;
         background-color: #ffffff;
         border-radius: 1px;
-        content: '';
         transition: background-color .3s;
+        content: '';
       }
       &:before {
         transform: rotate(45deg);
@@ -74,6 +103,25 @@
         }
       }
     }
+  }
+  span .error {
+    top: 45px;
+  }
+}
+
+// 類目選單select共用樣式
+.select_category.multiple,
+.select_category .el_select {
+  width: 100%;
+  min-height: 44px;
+  font-size: 14px;
+  line-height: 18px;
+  color: #292929;
+  background-color: #f3f3f3;
+  border: solid 1px #eeeeee;
+  border-radius: 4px;
+  &.border_red {
+    border: 1px solid #ea475b;
   }
 }
 

@@ -9,6 +9,13 @@
             <p>vee-validate</p>
           </div>
           <div class="content">
+            <SelectCategory
+              :type="'Skill'"
+              :name="'技能'"
+              :rules="'required'"
+              :max="1"
+              @emitSelect="emitSkill"
+            />
             <div
               class="wrap_category_multiple"
               @click="openSelect('Major', 3, dataMajor)"
@@ -113,6 +120,7 @@ import { ref, onMounted, onBeforeUnmount } from '@vue/composition-api'
 import { ValidationObserver, ValidationProvider, extend, localize } from 'vee-validate'
 // import zh_TW from 'vee-validate/dist/locale/zh_TW.json'
 import { required } from 'vee-validate/dist/rules'
+import SelectCategory from '~/components/SelectCategory'
 extend('required', {
   ...required,
   message: '{_field_}為必選欄位'
@@ -129,10 +137,12 @@ export default {
   name: 'Index',
   components: {
     ValidationObserver,
-    ValidationProvider
+    ValidationProvider,
+    SelectCategory
   },
   setup () {
     let ww = ref(0)
+    let dataSkill = ref([])
     let dataMajor = ref([])
     let dataAbil = ref([])
     let dataTool = ref([])
@@ -145,6 +155,9 @@ export default {
       'Area': dataArea,
       'https://747adam.github.io/menuTest/dist/json/testJson.json': dataTest
     })
+    const emitSkill = data => {
+      dataSkill.value = data
+    }
     const handleCallback = (e) => {
       const objName = e.payload.dataSource
       mapObj.value[objName] = e.selectedItems || null
@@ -187,12 +200,14 @@ export default {
     })
     return {
       ww,
+      dataSkill,
       dataMajor,
       dataAbil,
       dataArea,
       dataTool,
       dataTest,
       mapObj,
+      emitSkill,
       openSelect,
       delItem,
       onSubmit

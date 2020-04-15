@@ -1,7 +1,15 @@
-<div class="SelectCategory" @click="openSelect">
-  {{ selected && selected[0] && selected[0].des || defaultText }}
-  <span v-for="(item, index) in selected" v-show="selected && selected[0] && props.max > 1" :key="index">
-    {{ item.des }}
-    <a @click.stop="delItem(selected, item.no)" />
-  </span>
+<div class="select_category" :class="max > 1 ? 'multiple' : ''" @click="openSelect">
+  <ValidationProvider v-slot="{ errors }" :rules="rules" :name="name">
+    <input v-show="max === 1 || !selected || !selected.length" class="el_select" :class="{ 'border_red': errors[0] }"
+      :value="selected && selected[0] && selected[0].des" type="text" :placeholder="`請選擇${name}`">
+    <div v-show="max > 1 && selected && selected.length" class="list">
+      <span v-for="(item, index) in selected" :key="index">
+        {{ item.des }}
+        <a @click.stop="delItem(selected, item.no)" />
+      </span>
+    </div>
+    <div class="error">
+      {{ errors[0] }}
+    </div>
+  </ValidationProvider>
 </div>
