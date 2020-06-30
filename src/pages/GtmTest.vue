@@ -2,7 +2,7 @@
   <div class="gtm_test">
     <h1>GTM Test</h1>
     <button
-      class="aaa"
+      class="btn_cancel"
       :data-gtm-cancel="cancelTime"
       @click="cancel"
     >
@@ -44,6 +44,7 @@ export default {
     }
     const cancel = () => {
       window.dataLayer = window.dataLayer || []
+      console.log('cancel？', window.dataLayer)
       if (confirm('你確定要取消健診?')) {
         window.dataLayer.push({ event: 'custom-event', eventAction: '確認取消健檢', eventLabel: '確定' })
         console.log('yes', window.dataLayer)
