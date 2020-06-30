@@ -20,7 +20,6 @@ export default {
     let cancelTime = ref('')
     let timer = ref(0)
     const countdown = () => {
-      window.dataLayer = window.dataLayer || []
       timer.value = 60
       cancelTime.value = '60-50s'
       setInterval(() => {
@@ -43,6 +42,7 @@ export default {
       }, 1000)
     }
     const cancel = () => {
+      window.dataLayer = window.dataLayer || []
       if (confirm('你確定要取消健診?')) {
         window.dataLayer.push({ event: 'custom-event', eventAction: '確認取消健檢', eventLabel: '確定' })
         console.log('yes', window.dataLayer)
