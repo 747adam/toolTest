@@ -55,9 +55,6 @@ export default {
     onMounted(() => {
       countdown()
     })
-    onBeforeUnmount(() => {
-      countdown()
-    })
     return {
       cancelTime,
       timer,
