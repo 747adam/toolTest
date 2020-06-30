@@ -1,26 +1,31 @@
 <!DOCTYPE html>
 <html lang="zh-Hant-TW">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no" />
+    <!-- <link rel="icon" href="<%= BASE_URL %>favicon.ico" /> -->
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <script type="text/javascript" src="./js/form-helper-1.0.0.js"></script>
+    <!-- <link rel="prefetch" href="https://static.104.com.tw/category-tool/json/Major.json"> -->
+    <!-- <link rel="stylesheet" type="text/css" href="https://cdn.104.com.tw/category-tool/css/category-picker-2.0.0.css"> -->
+  </head>
 
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <meta name="format-detection" content="telephone=no" />
-  <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
-  <title><%= htmlWebpackPlugin.options.title %></title>
-  <script type="text/javascript" src="./js/form-helper-1.0.0.js"></script>
-  <!-- <link rel="prefetch" href="https://static.104.com.tw/category-tool/json/Major.json"> -->
-  <!-- <link rel="stylesheet" type="text/css" href="https://cdn.104.com.tw/category-tool/css/category-picker-2.0.0.css"> -->
-</head>
-
-<body id="body" ref="bodyRef">
-  <script type="text/javascript" async src="js/category-picker-2.0.0.js"></script>
-  <noscript>
-    <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled.
-      Please enable it to continue.</strong>
-  </noscript>
-  <div id="app"></div>
-  <!-- built files will be auto injected -->
-</body>
-
+  <body id="body" ref="bodyRef">
+    <script
+      type="text/javascript"
+      async
+      src="js/category-picker-2.0.0.js"
+    ></script>
+    <noscript>
+      <strong
+        >We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work
+        properly without JavaScript enabled. Please enable it to
+        continue.</strong
+      >
+    </noscript>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
 </html>
