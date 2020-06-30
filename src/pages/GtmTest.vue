@@ -11,7 +11,7 @@
   </div>
 </template>
 <script>
-import { ref, computed } from '@vue/composition-api'
+import { ref, onMounted, onBeforeUnmount } from '@vue/composition-api'
 export default {
   name: 'GtmTest',
   components: {
@@ -19,7 +19,7 @@ export default {
   setup () {
     let cancelTime = ref('')
     let timer = ref(0)
-    const countdown = computed(() => {
+    const countdown = () => {
       window.dataLayer = window.dataLayer || []
       timer.value = 60
       cancelTime.value = '60-50s'
@@ -41,7 +41,7 @@ export default {
           }
         }
       }, 1000)
-    })
+    }
     const cancel = () => {
       if (confirm('你確定要取消健診?')) {
         console.log('yes', window.dataLayer)
@@ -51,6 +51,12 @@ export default {
         window.dataLayer.push({ event: 'custom-event', eventAction: '確認取消健檢', eventLabel: '取消' })
       }
     }
+    onMounted(() => {
+      countdown()
+    })
+    onBeforeUnmount(() => {
+      countdown()
+    })
     return {
       cancelTime,
       timer,
