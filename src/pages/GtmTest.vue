@@ -2,6 +2,7 @@
   <div class="gtm_test">
     <h1>GTM Test</h1>
     <button
+      class="aaa"
       :data-gtm-cancel="cancelTime"
       @click="cancel"
     >
