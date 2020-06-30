@@ -44,11 +44,11 @@ export default {
     }
     const cancel = () => {
       if (confirm('你確定要取消健診?')) {
-        console.log('yes', window.dataLayer)
         window.dataLayer.push({ event: 'custom-event', eventAction: '確認取消健檢', eventLabel: '確定' })
+        console.log('yes', window.dataLayer)
       } else {
-        console.log('no', window.dataLayer)
         window.dataLayer.push({ event: 'custom-event', eventAction: '確認取消健檢', eventLabel: '取消' })
+        console.log('no', window.dataLayer)
       }
     }
     onMounted(() => {
