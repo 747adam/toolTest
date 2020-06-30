@@ -12,7 +12,7 @@
   </div>
 </template>
 <script>
-import { ref, onMounted, onBeforeUnmount } from '@vue/composition-api'
+import { ref, onMounted } from '@vue/composition-api'
 export default {
   name: 'GtmTest',
   components: {
