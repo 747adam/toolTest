@@ -2,12 +2,13 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Index from '../pages/Index.vue'
 import FormTest from '../pages/FormTest.vue'
+import GtmTest from '../pages/GtmTest.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/index.html',
+    path: '/',
     name: 'Index',
     component: Index
   },
@@ -20,6 +21,11 @@ const routes = [
     path: '/formTest.html',
     name: 'FormTest',
     component: FormTest
+  },
+  {
+    path: '/gtmTest.html',
+    name: 'GtmTest',
+    component: GtmTest
   },
   {
     path: '*',

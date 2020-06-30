@@ -10,45 +10,13 @@
           <p>FormHelper</p>
         </div>
         <div class="content">
-          <div
-            class="wrap_category_multiple"
-            @click="openSelect('Major', 3, dataMajor)"
-          >
-            <input
-              v-show="dataMajor && !dataMajor.length"
-              class="el_select"
-              :value="dataMajor && dataMajor[0] && dataMajor[0].des || ''"
-              type="text"
-              placeholder="請選擇工具"
-              data-validate-type="required"
-              data-validate-name="工具"
-            >
-            <div
-              v-show="dataMajor && dataMajor.length"
-              class="list"
-            >
-              <span
-                v-for="(item, index) in dataMajor"
-                :key="index"
-              >
-                {{ item.des }}
-                <a @click.stop="delItem(dataMajor, item.no)" />
-              </span>
-            </div>
-          </div>
-          <div
-            class="wrap_category"
-            @click="openSelect('Area', 1, dataArea, '[0-9]{7}000')"
-          >
-            <input
-              class="el_select"
-              :value="dataArea && dataArea[0] && dataArea[0].des || ''"
-              type="text"
-              placeholder="請選擇地區"
-              data-validate-type="required"
-              data-validate-name="地區"
-            >
-          </div>
+          <SelectCategory
+            :type="'Major'"
+            :name="'工具'"
+            :max="1"
+            :rules="'required'"
+            @emitSelect="emitMajor"
+          />
         </div>
       </section>
       <section>
@@ -57,19 +25,35 @@
           <p>json檔存於個人githoub</p>
         </div>
         <div class="content">
-          <div
-            class="wrap_category"
-            @click="openSelect( 'https://747adam.github.io/menuTest/dist/json/testJson.json', 1, dataTest, '[0-9]{7}000')"
-          >
-            <input
-              class="el_select"
-              :value="dataTest && dataTest[0] && dataTest[0].des || ''"
-              type="text"
-              placeholder="你的夢想職業（選填)"
-              data-validate-type="required"
-              data-validate-name="夢想職業"
-            >
-          </div>
+          <SelectCategory
+            :type="'https://747adam.github.io/menuTest/dist/json/testJson.json'"
+            :name="'你的夢想職業'"
+            :max="3"
+            :rules="'required'"
+            @emitSelect="emitTest"
+          />
+        </div>
+      </section>
+      <section>
+        <div class="title">
+          <h2>select改樣式</h2>
+        </div>
+        <div class="content">
+          <h3>橘色 單選</h3>
+          <ElSelect
+            :select-list="selectList"
+            :limit="5"
+            @emitSelected="emitSelected"
+          />
+          <h3>藍色 復選</h3>
+          <ElSelect
+            :select-list="selectList"
+            :limit="5"
+            :color="'blue'"
+            :multiple="true"
+            @emitSelected="emitSelected"
+          />
+          <p>{{ dataSelect }}</p>
         </div>
       </section>
       <div class="wrap_btn">
@@ -85,17 +69,51 @@
 </template>
 <script>
 import { ref, onMounted, onBeforeUnmount } from '@vue/composition-api'
-
+import SelectCategory from '~/components/SelectCategory'
+import ElSelect from '@/components/ElSelect.vue'
 export default {
   name: 'FormTest',
-  setup () {
+  components: {
+    SelectCategory,
+    ElSelect
+  },
+  setup (props, context) {
     let ww = ref(0)
-    let dataMajor = ref([])
-    let dataArea = ref([])
+    let selectList = ref([
+      {
+        value: 'a1',
+        text: '選項1'
+      },
+      {
+        value: 'a2',
+        text: '選項2'
+      },
+      {
+        value: 'a3',
+        text: '選項3'
+      },
+      {
+        value: 'a4',
+        text: '選項4'
+      },
+      {
+        value: 'a5',
+        text: '選項5'
+      },
+      {
+        value: 'a6',
+        text: '選項6'
+      },
+      {
+        value: 'a7',
+        text: '選項7'
+      }
+    ])
+    const dataMajor = ref([])
     let dataTest = ref([])
+    let dataSelect = ref(null)
     const mapObj = ref({
       'Major': dataMajor,
-      'Area': dataArea,
       'https://747adam.github.io/menuTest/dist/json/testJson.json': dataTest
     })
     const handleCallback = (e) => {
@@ -125,6 +143,15 @@ export default {
       const delIndex = dataName.findIndex(dataName => dataName.no === no)
       dataName.splice(delIndex, 1)
     }
+    const emitMajor = data => {
+      dataMajor.value = data
+    }
+    const emitTest = data => {
+      dataTest.value = data
+    }
+    const emitSelected = data => {
+      dataSelect.value = data
+    }
     const resizeWidth = () => {
       ww.value = document.body.offsetWidth
       window.categoryPicker.close()
@@ -146,14 +173,24 @@ export default {
     })
     return {
       ww,
+      selectList,
       dataMajor,
-      dataArea,
       dataTest,
+      dataSelect,
       mapObj,
       openSelect,
       delItem,
+      emitMajor,
+      emitTest,
+      emitSelected,
       fnFormCheck
     }
   }
 }
 </script>
+<style lang="scss">
+  h3 {
+    margin: 10px 0;
+    text-align: center;
+  }
+</style>

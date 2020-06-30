@@ -14,63 +14,28 @@
               :name="'技能'"
               :rules="'required'"
               :max="1"
+              @emitChangeBodyClass="emitChangeBodyClass"
               @emitSelect="emitSkill"
             />
-            <div
-              class="wrap_category_multiple"
-              @click="openSelect('Major', 3, dataMajor)"
-            >
-              <ValidationProvider
-                v-slot="{ errors }"
-                rules="required"
-                name="工具"
-              >
-                <input
-                  v-show="dataMajor && !dataMajor.length"
-                  class="el_select"
-                  :class="{ 'border_red': errors[0] }"
-                  :value="dataMajor && dataMajor[0] && dataMajor[0].des"
-                  type="text"
-                  placeholder="請選擇工具"
-                >
-                <div
-                  v-show="dataMajor && dataMajor.length"
-                  class="list"
-                >
-                  <span
-                    v-for="(item, index) in dataMajor"
-                    :key="index"
-                  >
-                    {{ item.des }}
-                    <a @click.stop="delItem(dataMajor, item.no)" />
-                  </span>
-                </div>
-                <div class="error">
-                  {{ errors[0] }}
-                </div>
-              </ValidationProvider>
-            </div>
-            <div
-              class="wrap_category"
-              @click="openSelect('Area', 1, dataArea, '[0-9]{7}000')"
-            >
-              <ValidationProvider
-                v-slot="{ errors }"
-                rules="required"
-                name="地區"
-              >
-                <input
-                  class="el_select"
-                  :class="{ 'border_red': errors[0] }"
-                  :value="dataArea && dataArea[0] && dataArea[0].des"
-                  type="text"
-                  placeholder="請選擇地區"
-                >
-                <div class="error">
-                  {{ errors[0] }}
-                </div>
-              </ValidationProvider>
-            </div>
+            <SelectCategory
+              :type="'Major'"
+              :name="'科系'"
+              :rules="'required'"
+              :max="3"
+              @emitChangeBodyClass="emitChangeBodyClass"
+              @emitSelect="emitMajor"
+            />
+            <SelectCategory
+              :type="'Area'"
+              :name="'地區'"
+              :rules="'required'"
+              :max="1"
+              :singleleve="true"
+              :unselectablelist="'[0-9]{7}000'"
+              :whitelist="'6001[0-9]{6}'"
+              @emitChangeBodyClass="emitChangeBodyClass"
+              @emitSelect="emitArea"
+            />
           </div>
         </section>
         <section>
@@ -79,27 +44,30 @@
             <p>json檔存於個人githoub</p>
           </div>
           <div class="content">
-            <div
-              class="wrap_category"
-              @click="openSelect( 'https://747adam.github.io/menuTest/dist/json/testJson.json', 1, dataTest, '[0-9]{7}000')"
-            >
-              <ValidationProvider
-                v-slot="{ errors }"
-                rules="required"
-                name="夢想職業"
-              >
-                <input
-                  class="el_select"
-                  :class="{ 'border_red': errors[0] }"
-                  :value="dataTest && dataTest[0] && dataTest[0].des"
-                  type="text"
-                  placeholder="你的夢想職業（選填)"
-                >
-                <div class="error">
-                  {{ errors[0] }}
-                </div>
-              </ValidationProvider>
-            </div>
+            <!-- <SelectCategory
+              :type="'https://747adam.github.io/menuTest/dist/json/testJson.json'"
+              :name="'夢想職業'"
+              :rules="'required'"
+              :max="1"
+              :unselectablelist="'[0-9]{7}000'"
+              @emitChangeBodyClass="emitChangeBodyClass"
+              @emitSelect="emitTest"
+            /> -->
+            <!-- <SelectCategory
+              :type="'https://747adam.github.io/menuTest/dist/json/listTest.json'"
+              :name="'測試單層'"
+              :max="1"
+              @emitChangeBodyClass="emitChangeBodyClass"
+              @emitSelect="emitTest"
+            /> -->
+            <SelectCategory
+              :type="'https://747adam.github.io/menuTest/dist/json/list.json'"
+              :name="'測試單層'"
+              :max="1"
+              :singleleve="true"
+              @emitChangeBodyClass="emitChangeBodyClass"
+              @emitSelect="emitTest"
+            />
           </div>
         </section>
         <div class="wrap_btn">
@@ -117,7 +85,7 @@
 </template>
 <script>
 import { ref, onMounted, onBeforeUnmount } from '@vue/composition-api'
-import { ValidationObserver, ValidationProvider, extend, localize } from 'vee-validate'
+import { ValidationObserver, extend, localize } from 'vee-validate'
 // import zh_TW from 'vee-validate/dist/locale/zh_TW.json'
 import { required } from 'vee-validate/dist/rules'
 import SelectCategory from '~/components/SelectCategory'
@@ -137,10 +105,9 @@ export default {
   name: 'Index',
   components: {
     ValidationObserver,
-    ValidationProvider,
     SelectCategory
   },
-  setup () {
+  setup (props, context) {
     let ww = ref(0)
     let dataSkill = ref([])
     let dataMajor = ref([])
@@ -155,31 +122,20 @@ export default {
       'Area': dataArea,
       'https://747adam.github.io/menuTest/dist/json/testJson.json': dataTest
     })
+    const emitChangeBodyClass = data => {
+      context.parent.$el.parentElement.className = data
+    }
     const emitSkill = data => {
       dataSkill.value = data
     }
-    const handleCallback = (e) => {
-      const objName = e.payload.dataSource
-      mapObj.value[objName] = e.selectedItems || null
+    const emitMajor = data => {
+      dataMajor.value = data
     }
-    const openSelect = (type, max, selected, unselectableList) => {
-      const elBody = document.getElementById('body')
-      if (type === 'Area') {
-        elBody.classList.add('area')
-      } else {
-        elBody.classList.remove('area')
-      }
-      window.categoryPicker.open({
-        onSubmit: handleCallback,
-        dataSource: type,
-        selectedItems: selected || null,
-        theme: 'customer-theme',
-        maxSelectedNumber: max || 1,
-        backdropClose: true,
-        recommendation: false,
-        whitelist: type === 'Area' ? '600[1]{1}' : '',
-        unselectableList: unselectableList || ''
-      })
+    const emitArea = data => {
+      dataArea.value = data
+    }
+    const emitTest = data => {
+      dataTest.value = data
     }
     const delItem = (dataName, no) => {
       const delIndex = dataName.findIndex(dataName => dataName.no === no)
@@ -207,8 +163,11 @@ export default {
       dataTool,
       dataTest,
       mapObj,
+      emitChangeBodyClass,
       emitSkill,
-      openSelect,
+      emitMajor,
+      emitArea,
+      emitTest,
       delItem,
       onSubmit
     }
@@ -217,12 +176,17 @@ export default {
 </script>
 
 <style lang="scss">
+/* input placeholder 文字顏色 */
 ::placeholder {
   color: #a4a4a4;
   opacity: 1; /* Firefox */
 }
 
 ::-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #a4a4a4;
+}
+
+::-webkit-input-placeholder {
   color: #a4a4a4;
 }
 
@@ -272,6 +236,7 @@ p {
     border: 0;
     border-radius: 4px;
     outline: none;
+    // 去掉打字icon
     caret-color: transparent;
     &.border_red {
       position: absolute;

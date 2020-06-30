@@ -23,7 +23,7 @@ export default {
       type: String,
       default: ''
     },
-    closeLevelOne: {
+    singleleve: {
       type: Boolean,
       default: false
     },
@@ -41,7 +41,7 @@ export default {
     }
     const closeLOne = computed(() => {
       const elBody = document.getElementById('body')
-      if (props.closeLevelOne) {
+      if (props.singleleve) {
         elBody.classList.add('close_select_LOne')
       } else {
         elBody.classList.remove('close_select_LOne')

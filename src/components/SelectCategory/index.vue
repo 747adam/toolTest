@@ -39,12 +39,12 @@ export default {
       default: ''
     },
     // 隱藏類目代碼 CheckBox
-    unselectableList: {
+    unselectablelist: {
       type: String,
       default: ''
     },
     // 隱藏大類
-    closeLevelOne: {
+    singleleve: {
       type: Boolean,
       default: false
     }
@@ -52,17 +52,9 @@ export default {
   setup (props, context) {
     let ww = ref(0)
     let selected = ref(null)
-    const handleCallback = (e) => {
+    const handleCallback = e => {
       selected.value = e.selectedItems || null
       emitData()
-    }
-    const closeLOne = () => {
-      const domBody = document.getElementById('body')
-      if (props.closeLevelOne) {
-        domBody.classList.add('close_select_LOne')
-      } else {
-        domBody.classList.remove('close_select_LOne')
-      }
     }
     const openSelect = () => {
       closeLOne()
@@ -75,9 +67,46 @@ export default {
         backdropClose: true,
         recommendation: false,
         whitelist: props.whitelist,
-        blacklist: props.whitelist,
-        unselectableList: props.unselectableList
+        blacklist: props.blacklist,
+        unselectableList: props.unselectablelist
       })
+      if (ww.value < 690 && props.singleleve) clickSelectItem()
+    }
+    const closeLOne = () => {
+      if (props.singleleve) {
+        document.querySelector('body').classList.add('close_select_LOne')
+        // context.emit('emitChangeBodyClass', 'close_select_LOne')
+      } else {
+        // context.emit('emitChangeBodyClass', '')
+        document.querySelector('body').classList.remove('close_select_LOne')
+      }
+    }
+    const clickSelectItem = () => {
+      if (document.querySelector('.category-item')) {
+        document.querySelector('.category-item').click()
+      } else {
+        requestAnimationFrame(clickSelectItem)
+      }
+      // context.root.$nextTick(() => {
+      //   if (document.querySelector('.category-item')) {
+      //     document.querySelector('.category-item').click()
+      //     console.log('XXXXXXXX')
+      //   } else {
+      //     setTimeout(() => {
+      //       console.log('elseXXXXX')
+      //       clickSelectItem()
+      //     }, 100)
+      //   }
+      // })
+      // if (document.querySelector('.category-item')) {
+      //   document.querySelector('.category-item').click()
+      //   console.log('XXXXXXXX')
+      // } else {
+      //   setTimeout(() => {
+      //     console.log('elseXXXXX')
+      //     clickSelectItem()
+      //   }, 100)
+      // }
     }
     const delItem = (dataName, no) => {
       const delIndex = dataName.findIndex(dataName => dataName.no === no)
@@ -100,6 +129,7 @@ export default {
       ww,
       selected,
       openSelect,
+      clickSelectItem,
       delItem,
       emitData
     }

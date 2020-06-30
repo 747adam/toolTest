@@ -38,7 +38,7 @@ module.exports = {
       }),
       new PrerenderSPAPlugin({
         staticDir: path.join(__dirname, 'dist', process.env.project),
-        routes: ['/index.html'],
+        routes: ['/index.html', '/formTest.html'],
         postProcess (renderedRoute) {
           if (renderedRoute.route.endsWith('.html')) {
             renderedRoute.outputPath = path.join(
