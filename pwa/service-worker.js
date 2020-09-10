@@ -3,15 +3,16 @@ importScripts("precache-manifest.c1144a3b2c33d6a29742d7f73d3e9386.js", "https://
 if (workbox) {
     console.log('有進入workbox')
 
-    // 強製 build 版
-    // workbox.setConfig({
-    //     debug: false,
-    // });
-
     workbox.core.setCacheNameDetails({
         prefix: 'adamWorkBox',
-        suffix: 'v1'
+        suffix: 'v2'
     });
+
+    workbox.precaching.precacheAndRoute([
+        {
+          url: '/'
+        }
+    ]);
     workbox.routing.registerRoute(
         new RegExp('.+\\.js$'),
         // JavaScript文件盡可能來自網絡，但如果網絡出現故障，則回退到cache版本
