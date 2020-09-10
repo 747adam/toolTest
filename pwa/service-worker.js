@@ -1,16 +1,16 @@
-importScripts("precache-manifest.c1144a3b2c33d6a29742d7f73d3e9386.js", "https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
+importScripts("precache-manifest.124da65c653a98a206c733ebe457bf56.js", "https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 if (workbox) {
     console.log('有進入workbox')
 
     workbox.core.setCacheNameDetails({
         prefix: 'adamWorkBox',
-        suffix: 'v2'
+        suffix: 'v3'
     });
 
     workbox.precaching.precacheAndRoute([
         {
-          url: '/index.html'
+          url: '/'
         }
     ]);
     workbox.routing.registerRoute(
