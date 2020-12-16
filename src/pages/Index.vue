@@ -44,15 +44,22 @@
             <p>json檔存於個人githoub</p>
           </div>
           <div class="content">
-            <!-- <SelectCategory
-              :type="'https://747adam.github.io/menuTest/dist/json/testJson.json'"
-              :name="'夢想職業'"
+            <SelectCategory
+              :type="'https://747adam.github.io/my_components/testJson/data.json'"
+              :name="'測試'"
               :rules="'required'"
               :max="1"
-              :unselectablelist="'[0-9]{7}000'"
               @emitChangeBodyClass="emitChangeBodyClass"
               @emitSelect="emitTest"
-            /> -->
+            />
+            <SelectCategory
+              :type="'https://747adam.github.io/my_components/testJson/list.json'"
+              :name="'測試adam'"
+              :rules="'required'"
+              :max="1"
+              @emitChangeBodyClass="emitChangeBodyClass"
+              @emitSelect="emitTest"
+            />
             <!-- <SelectCategory
               :type="'https://747adam.github.io/menuTest/dist/json/listTest.json'"
               :name="'測試單層'"
@@ -60,14 +67,14 @@
               @emitChangeBodyClass="emitChangeBodyClass"
               @emitSelect="emitTest"
             /> -->
-            <SelectCategory
+            <!-- <SelectCategory
               :type="'https://747adam.github.io/menuTest/dist/json/list.json'"
               :name="'測試單層'"
               :max="1"
               :singleleve="true"
               @emitChangeBodyClass="emitChangeBodyClass"
               @emitSelect="emitTest"
-            />
+            /> -->
           </div>
         </section>
         <div class="wrap_btn">
